@@ -26,7 +26,7 @@ Non repo files/paths:
 
 The basic bot is designed to be super simple and reliable. It's no good if we're working on Baz and we break it and posts are missed. For this reason, the main bot is separate from the 'worker'.
 
-The worker listens for bot messages, executes those asynchronously, and returns data which will be printed out by the main bot. Since we will be invoking some kind of large-language model (probably GPT 3.5-turbo), the bot will take some time to respond. The bot shows 'typing' while processing is going on.
+The worker listens for bot messages, executes those asynchronously, and returns data which will be printed out by the main bot. Since we will be invoking some kind of large-language model (probably GPT 3.5-turbo), the bot will take some time to respond. The bot shows 'typing' while it's waiting for a worker response.
 
 `src/main` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python main.py`.
 
@@ -36,9 +36,9 @@ To-do:
 
 `src/brain` will house the large language model. We will probably just use OpenAI because:
 
-* It's very capable in indeed
+* It's very capable indeed
 * gpt3.5-turbo doesn't cost much, has a 16k context option, and it's fast.
-* This is just going to run on a CPU-only server. Self-run models are _chonky_.
+* This is just going to run on a CPU-only server. Self-run models are _chonky_. But maybe soon they'll be a good alternative
 
 `src/attitude` will house the class that is responsible for creating the prompts for a large language model. It's where we inject our bot's personality, and there we model emotional state based on response. Baz doesn't much like humans, but how much it doesn't like them depends on what you ask it to do.
 
@@ -73,13 +73,13 @@ We should figure out how to do a history scrape and then share the vectors for l
 
 * Create your own bot, maybe look at [this tutorial](https://realpython.com/how-to-make-a-discord-bot-python/)
 * Get up to speed on [Discord.py](https://discordpy.readthedocs.io/en/stable/)
-* Create your own discord server (it's called a guide in API-speak)
+* Create your own discord server (it's called a guild in API-speak)
 * Set up your '.env' file with `TOKEN='dsflkjsdfljkf'` etc in it.
 * Clone and run the repo, make sure it works as you expect.
 
 If you're not huge on Python or this docker stuff. Get WSL2 installed on your machine, if you use Windows. Install Docker for Windows and you should be fine.
 
-PR's welcome but discuss them in the Bogans channel first, tbd.
+PRs welcome but discuss them in the Bogans channel first, tbd.
 
 ## License
 
