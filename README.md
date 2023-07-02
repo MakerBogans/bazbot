@@ -28,19 +28,19 @@ The basic bot is designed to be super simple and reliable. It's no good if we're
 
 The worker listens for bot messages, executes those asynchronously, and returns data which will be printed out by the main bot. Since we will be invoking some kind of large-language model (probably GPT 3.5-turbo), the bot will take some time to respond. The bot shows 'typing' while it's waiting for a worker response.
 
-`src/main` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python main.py`.
+`src/bot` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python bot.py`.
 
 `src/worker` is where the worker code goes.
 
-To-do:
-
-`src/brain` will house the large language model. We will probably just use OpenAI because:
+`src/brain` calls the large language model. We will use OpenAI because:
 
 * It's very capable indeed
 * gpt3.5-turbo doesn't cost much, has a 16k context option, and it's fast.
 * This is just going to run on a CPU-only server. Self-run models are _chonky_. But maybe soon they'll be a good alternative
 
-`src/attitude` will house the class that is responsible for creating the prompts for a large language model. It's where we inject our bot's personality, and there we model emotional state based on response. Baz doesn't much like humans, but how much it doesn't like them depends on what you ask it to do.
+`src/attitude` includes the class responsible for creating the prompts for a large language model. It's where we inject our bot's personality, and there we model emotional state based on response. Baz doesn't much like humans, but how much it doesn't like them depends on what you ask it to do.
+
+To-do:
 
 `src/history` will be a one-off script that attempts to use the message history to harvest back as far as we can go, passing messages to `src/vectors`. Unclear how this will work just yet.
 
@@ -62,13 +62,14 @@ We should figure out how to do a history scrape and then share the vectors for l
 * `python3.11 -m venv .venv`
 * `source .venv/bin/activate`
 * `pip install -r requirements.txt`
+* Create a `.env` file with `TOKEN=` for Discord, and `OPENAI_API_KEY=` for OpenAI values
 
 ## Running the bot
 
 * `docker compose up -d` to run the services
 * `source .venv/bin/activate` to activate Python virtual environment
 * `arq worker.WorkerSettings`
-* `python src/main.py`
+* `python src/bot.py`
 
 ## How to contribute
 

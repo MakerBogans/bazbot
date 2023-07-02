@@ -46,15 +46,24 @@ async def on_message(message: discord.Message):
 async def baz(ctx: commands.Context):
     # Set typing indicator
     async with ctx.typing():
+        # Make a description of the place this message occured
+        channel_name = f"the {ctx.channel.name} channel" if isinstance(ctx.channel, discord.TextChannel) else "a private message"
         # Send the task to worker via arq/reddis
         assert redis is not None
-        job = await redis.enqueue_job('command', ctx.message.content)
+        job = await redis.enqueue_job('command', ctx.author.display_name, channel_name, ctx.message.content)
         if job is None:
             await ctx.send("Job is None")
             return
-        response = await job.result(timeout=5)
-        # Send the response back to the channel
-        await ctx.send(response)
+        try:
+            # Wait for the response from the worker
+            response = await job.result(timeout=10)
+            if response is not None:
+                # Send the response back to the channel
+                await ctx.send(response)
+        except TimeoutError:
+            await ctx.send("Baz is taking too long to respond, please try again later. Or get fucked.")
+            return
+
 
 if __name__ == "__main__":
     # Blocking command that starts the event loop

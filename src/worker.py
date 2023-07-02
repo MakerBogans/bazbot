@@ -1,10 +1,15 @@
 from asyncio import sleep
-from vectors import Vectinator
 
-async def command(ctx: dict, message: str) -> str:
-    await sleep(2)
-    return f"Worker response to {message}"
-    
+from brain import BazBrain
+
+
+brain = BazBrain()
+
+
+async def command(ctx: dict, author: str, channel: str, message: str) -> str | None:
+    """This is the worker function that will be called by the arq worker."""
+    response = await brain.think(author, channel, message)
+    return response
 
 
 # WorkerSettings defines the settings to use when creating the work,

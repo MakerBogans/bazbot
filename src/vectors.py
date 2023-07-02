@@ -61,8 +61,7 @@ class Vectinator:
         points: list[ScoredPoint] = self.qdrant.search(
             collection_name="posts",
             query_vector=vector,
-            filter=None,
-            top=topn,
+            limit=topn,
             with_payload=True,
             score_threshold=0.9 # seems about right based on some testing
         )
