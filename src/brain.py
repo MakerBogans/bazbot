@@ -32,27 +32,27 @@ class BazBrain:
             messages=[{"role": "user", "content": prompt}],
             max_tokens=150,
         )
-        print('completion:', completion)
+        #print('completion:', completion)
         return completion.choices[0].message.content # type: ignore (openai's python binding is hot garbage')
 
     async def think(self, author: str, channel: str, message: str) -> str | None:
         """Return the bot's response to the message. Can return None if it chooses to ignore the message"""
-        message = (
-            "Bogan member " + author + " in " + channel + " said: " + message + "\n"
+        prompt = (
+            "Bogan member " + author + " in " + channel + " says to you: " + message + "\n"
         )
         results = self.vectinator.search(message)
         # If we got got semantically relevant search results, stick those in the prompt
         if len(results) > 0:
-            message = "Potentially relevant past posts by Maker Bogan members: \n"
+            prompt +=  "Potentially relevant past posts by Maker Bogan members: \n"
             for result in results:
-                message += (
+                prompt += (
                     f"{result.author_name} in {result.channel} said: {result.message}\n"
                 )
         # Now make a prompt from our attitude module
-        prompt = self.attitude.make_prompt(message)
-        print('prompt:', prompt)
+        fullprompt = self.attitude.make_prompt(prompt)
+        print('prompt:', fullprompt)
         try:
-            response = await self._gpt_request(prompt)
+            response = await self._gpt_request(fullprompt)
             return response
         except Exception as e:
             print(e)

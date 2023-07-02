@@ -36,7 +36,7 @@ async def on_ready():
 async def on_message(message: discord.Message):
     # Ignore messages from the bot itself. Or should we? 
     # !bot commands responses perhaps should be saved?
-    if message.author == bot.user:
+    if message.author == bot.user or message.content.startswith('!'):
         return
     vectinator.save_message(message)
     # Let bot process commands in addition to the above "on_message" handling.
