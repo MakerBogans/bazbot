@@ -1,0 +1,6 @@
+discord.py
+sentence_transformers
+qdrant_client
+python-dotenv
+arq
+watchfiles
