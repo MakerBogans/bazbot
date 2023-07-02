@@ -42,7 +42,7 @@ class Vectinator:
             return
         vector = self.get_embeddings(message.content)
         point = PointStruct(
-            id=1,
+            id=message.id,
             vector=vector,
             payload={
                 "aname": message.author.display_name,

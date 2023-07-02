@@ -37,8 +37,9 @@ class BazBrain:
 
     async def think(self, author: str, channel: str, message: str) -> str | None:
         """Return the bot's response to the message. Can return None if it chooses to ignore the message"""
+        message_no_prefix = message.split("!baz")[1].strip()
         prompt = (
-            "Bogan member " + author + " in " + channel + " says to you: " + message + "\n"
+            "Bogan member " + author + " in " + channel + " says to you: " + message_no_prefix + "\n"
         )
         results = self.vectinator.search(message)
         # If we got got semantically relevant search results, stick those in the prompt
