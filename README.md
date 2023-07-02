@@ -52,6 +52,7 @@ We should figure out how to do a history scrape and then share the vectors for l
 * Full type hints, in VS Code search for `type checking mode` in Pylance, and switch this to Basic.
 * No clever shit, obvious code for non-Pythonistas.
 * Doc strings and comments.
+* 'Black' code formatting
 
 ## Installing
 
