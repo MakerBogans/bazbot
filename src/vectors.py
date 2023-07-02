@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from qdrant_client import QdrantClient, grpc
+from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams, ScoredPoint
 from datetime import datetime
 from discord import Message, TextChannel
@@ -24,8 +24,15 @@ class Vectinator:
         # model card: https://huggingface.co/ggrn/e5-small-v2
         self.model = SentenceTransformer("intfloat/e5-small-v2")
         self.qdrant = QdrantClient(host="localhost", port=6333, timeout=3.0)
+        # Why can't this just be a list of string?!
         result = self.qdrant.get_collections()
-        if "posts" not in result.collections:
+        foundcollection = False
+        for collection in result.collections:
+            if collection.name == "posts":
+                foundcollection = True
+                break
+        if not foundcollection:
+            print('creating collection')
             self.qdrant.recreate_collection(
                 collection_name="posts",
                 vectors_config=VectorParams(size=384, distance=Distance.COSINE),
@@ -63,7 +70,7 @@ class Vectinator:
             query_vector=vector,
             limit=topn,
             with_payload=True,
-            score_threshold=0.9 # seems about right based on some testing
+            score_threshold=0.88 # seems about right based on some testing
         )
         results: list[SearchHit] = []
         for point in points:
