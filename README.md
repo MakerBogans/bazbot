@@ -62,7 +62,7 @@ We should figure out how to do a history scrape and then share the vectors for l
 * `python3.11 -m venv .venv`
 * `source .venv/bin/activate`
 * `pip install -r requirements.txt`
-* Create a `.env` file with `TOKEN=` for Discord, and `OPENAI_API_KEY=` for OpenAI values
+* Create a `.env` file with `TOKEN=` for Discord, and `OPENAI_API_KEY=` for OpenAI values, and `GUILD_ID` for the harvester tool.
 
 ## Running the bot
 

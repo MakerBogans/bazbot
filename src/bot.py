@@ -1,6 +1,3 @@
-# Bot permissions integer 84992
-# https://discord.com/api/oauth2/authorize?client_id=1100283582070673479&permissions=19456&scope=bot
-
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
@@ -11,7 +8,7 @@ from arq.connections import RedisSettings
 
 load_dotenv()
 TOKEN = getenv('TOKEN')
-GUILD = getenv('GUILD')
+GUILD_ID = getenv('GUILD_ID')
 
 if TOKEN is None:
     print("TOKEN is not set in .env file.")
@@ -27,7 +24,7 @@ redis: ArqRedis | None = None
 async def on_ready():
     global redis
     redis = await create_pool(RedisSettings())
-    guild = discord.utils.get(bot.guilds, name=GUILD)
+    guild = discord.utils.get(bot.guilds, name=GUILD_ID)
     if guild is not None:
         print(f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})')
