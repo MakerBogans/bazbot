@@ -2,7 +2,7 @@
 from dotenv import load_dotenv
 import discord
 from os import getenv
-from vectors import Vectinator
+from bazbot.vectors import Vectinator
 from datetime import datetime
 from typing import TypedDict
 from os.path import isfile

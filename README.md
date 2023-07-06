@@ -13,7 +13,7 @@ There's an almost endless set of fun and useful features we can implement but th
 
 ## Repo structure
 
-- `src/` - The Python code lives in this directory
+- `bazbot/` - The Python code lives in this directory (it's a python module)
 - `docker-compose.yaml` - Docker services: Qdrant and Redis
 
 Non repo files/paths:
@@ -28,19 +28,20 @@ The basic bot is designed to be super simple and reliable. It's no good if we're
 
 The worker listens for bot messages, executes those asynchronously, and returns data which will be printed out by the main bot. Since we will be invoking some kind of large-language model (probably GPT 3.5-turbo), the bot will take some time to respond. The bot shows 'typing' while it's waiting for a worker response.
 
-`src/bot` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python src/bot.py`.
+`bazbot/bot` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python -m bazbot.bot`.
 
-`src/harvest` is a CLI script that has the bot join a server and harvest historical messages from every channel. It stores highwater dates in `channels.pickel` in case it's interrupted or there is an error during the harvest sequence.
+`bazbot/worker` is where the worker code goes.
 
-`src/worker` is where the worker code goes.
+`bazbot/brain` calls the large language model. We will use OpenAI until such time as we have a suitable open source LLM and chonky hardware to run it.
 
-`src/brain` calls the large language model. We will use OpenAI because:
 
-* It's very capable indeed
-* gpt3.5-turbo doesn't cost much, has a 16k context option, and it's fast.
-* This is just going to run on a CPU-only server. Self-run models are _chonky_. But maybe soon they'll be a good alternative
+`bazbot/attitude` includes the class responsible for creating the prompts for a large language model. It's where we inject our bot's personality, and there we model emotional state based on response. Baz doesn't much like humans, but how much it doesn't like them depends on what you ask it to do.
 
-`src/attitude` includes the class responsible for creating the prompts for a large language model. It's where we inject our bot's personality, and there we model emotional state based on response. Baz doesn't much like humans, but how much it doesn't like them depends on what you ask it to do.
+`harvest` is a CLI script that has the bot join a server and harvest historical messages from every channel. It stores highwater dates in `channels.pickel` in case it's interrupted or there is an error during the harvest sequence.
+
+`searchcli` is a CLI script for testing that allows you to do semantic search over the vector database.
+
+`launch.sh` is a bash shell script to run the worker and the bot. arq will reload if there are any changes to the worker.
 
 To-do:
 
@@ -65,12 +66,14 @@ The `channels.pickle` data structure would need to be updated under normal opera
 * `pip install -r requirements.txt`
 * Create a `.env` file with `TOKEN=` for Discord, and `OPENAI_API_KEY=` for OpenAI values, and `GUILD_ID` for the harvester tool.
 
-## Running the bot
+## Running the bot (manually)
 
 * `docker compose up -d` to run the services
 * `source .venv/bin/activate` to activate Python virtual environment
-* `arq worker.WorkerSettings`
-* `python src/bot.py`
+* `arq bazbot.worker.WorkerSettings`
+* `python -m bazbot.bot`
+
+Run `python src/harvest.py` to harvest historical posts.
 
 ## How to contribute
 

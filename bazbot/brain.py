@@ -7,8 +7,8 @@ https://openai.com/blog/function-calling-and-other-api-updates
 But for now, we'll just do something super basic and do a semantic search for the messages.
 
 """
-from vectors import Vectinator
-from attitude import BazAttitude
+from bazbot.vectors import Vectinator
+from bazbot.attitude import BazAttitude
 import openai
 from os import getenv
 from dotenv import load_dotenv

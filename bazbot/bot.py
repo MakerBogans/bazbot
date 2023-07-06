@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from os import getenv
-from vectors import Vectinator
+from bazbot.vectors import Vectinator
 from arq import create_pool, ArqRedis
 from arq.connections import RedisSettings
 

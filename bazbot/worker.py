@@ -1,5 +1,5 @@
 from asyncio import sleep
-from brain import BazBrain
+from bazbot.brain import BazBrain
 
 brain = BazBrain()
 

@@ -1,4 +1,4 @@
-from vectors import Vectinator
+from bazbot.vectors import Vectinator
 
 if __name__ == "__main__":
     vectinator = Vectinator()
