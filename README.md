@@ -28,7 +28,9 @@ The basic bot is designed to be super simple and reliable. It's no good if we're
 
 The worker listens for bot messages, executes those asynchronously, and returns data which will be printed out by the main bot. Since we will be invoking some kind of large-language model (probably GPT 3.5-turbo), the bot will take some time to respond. The bot shows 'typing' while it's waiting for a worker response.
 
-`src/bot` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python bot.py`.
+`src/bot` is the main bot. This imports `src/vectors.py` for the embeddings duties. This is invoked with a plain `python src/bot.py`.
+
+`src/harvest` is a CLI script that has the bot join a server and harvest historical messages from every channel. It stores highwater dates in `channels.pickel` in case it's interrupted or there is an error during the harvest sequence.
 
 `src/worker` is where the worker code goes.
 
@@ -42,9 +44,8 @@ The worker listens for bot messages, executes those asynchronously, and returns 
 
 To-do:
 
-`src/history` will be a one-off script that attempts to use the message history to harvest back as far as we can go, passing messages to `src/vectors`. Unclear how this will work just yet.
-
-We should figure out how to do a history scrape and then share the vectors for local dev/testing. Maybe we can just zip up the `/data/qdrant_storage` folder?
+Seems like we can basically put harvest into the regular bot code and just have it as a start-up action. The bot ought to function while a harvest is going on.
+The `channels.pickle` data structure would need to be updated under normal operation. The pickle should probably be an sqlite or something.
 
 ## Code style
 

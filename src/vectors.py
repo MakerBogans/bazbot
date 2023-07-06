@@ -18,7 +18,7 @@ class SearchHit:
 class Vectinator:
     """Class for creating vector representations of text strings and saving them to Qdrant index."""
 
-    def __init__(self):
+    def __init__(self, nuke: bool = False):
         # Best performing short-length embeddings model for retrieval tasks according to:
         # https://huggingface.co/spaces/mteb/leaderboard
         # model card: https://huggingface.co/ggrn/e5-small-v2
@@ -31,8 +31,8 @@ class Vectinator:
             if collection.name == "posts":
                 foundcollection = True
                 break
-        if not foundcollection:
-            print('creating collection')
+        if nuke or not foundcollection:
+            print('Creating collection, too bad if it existed before!')
             self.qdrant.recreate_collection(
                 collection_name="posts",
                 vectors_config=VectorParams(size=384, distance=Distance.COSINE),
