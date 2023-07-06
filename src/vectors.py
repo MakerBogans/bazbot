@@ -44,10 +44,14 @@ class Vectinator:
         return embeddings[0].tolist()
 
     def save_message(self, message: Message) -> None:
-        """Save message to Qdrant index. Takes a discord.Message class as input."""
+        """Upserts messages and vectors to Qdrant db. Takes a discord.Message class as input."""
         if not isinstance(message.channel, TextChannel):
             return
+        # Ignore empty messages and short messages like 'lol'
+        if message.content.strip() == "" or len(message.content) < 20: 
+            return
         vector = self.get_embeddings(message.content)
+        # This is similar to a row in a standard database
         point = PointStruct(
             id=message.id,
             vector=vector,
@@ -61,8 +65,8 @@ class Vectinator:
         )
         self.qdrant.upsert(collection_name="posts", points=[point])
 
-    def search(self, query: str, topn: int = 20) -> list[SearchHit]:
-        """Search Qdrant index for similar messages. Returns a list of dicts."""
+    def search(self, query: str, topn: int = 20, threshold: float = 0.9) -> list[SearchHit]:
+        """Search Qdrant index for similar messages. Returns a list of SearchHit data classes."""
         # The reason for prepending "query: " is that the model was trained on this, see model card
         vector = self.get_embeddings('query: ' + query)
         points: list[ScoredPoint] = self.qdrant.search(
@@ -70,7 +74,7 @@ class Vectinator:
             query_vector=vector,
             limit=topn,
             with_payload=True,
-            score_threshold=0.88 # seems about right based on some testing
+            score_threshold=threshold
         )
         results: list[SearchHit] = []
         for point in points:
