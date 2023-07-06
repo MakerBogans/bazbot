@@ -55,7 +55,8 @@ class HarvesterClient(discord.Client):
             for count, channel in enumerate(this_guild.text_channels):
                 print(f"Reading {channel.name} in {this_guild.name} ({count+1}/{len(this_guild.text_channels)})")
                 try:  # try-except block in case bot doesn't have message history permissions
-                    async for msg in channel.history(limit=None):
+                    # iterate through the messages in the channel after the highwater mark for this channel
+                    async for msg in channel.history(limit=None, after=channelmap[channel.id]['highwater']):
                         # update the highwater mark for this channel
                         hw = channelmap[channel.id]['highwater']  # Pylance is weird, it will not infer if you check on a dictionary value
                         if hw is None or msg.created_at > hw:
