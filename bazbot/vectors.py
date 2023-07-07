@@ -31,7 +31,8 @@ class Vectinator:
             if collection.name == "posts":
                 foundcollection = True
                 break
-        if nuke or not foundcollection:
+        if not foundcollection or nuke:
+            print(foundcollection, nuke)
             print('Creating collection, too bad if it existed before!')
             self.qdrant.recreate_collection(
                 collection_name="posts",

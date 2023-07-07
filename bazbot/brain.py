@@ -1,10 +1,12 @@
 """
 This is the brain of the bot. It decides what to do with a message.
 
-We could actually expose the search functionality via a web API and use GPT's function calling:
-https://openai.com/blog/function-calling-and-other-api-updates
+For now the bot performs a semantic search of prior messages and injects this into a message to GPT-3.
+That message is further modified by the attitude module.
 
-But for now, we'll just do something super basic and do a semantic search for the messages.
+To-to: This file should keep track of recent user interactions (FIFO) and also inject those into the prompt.
+Typically chat bots also keep track of the bot's own output so we should do that too. It is debatable whether channel chat
+history other than bot interactions should be included. If it's semantically relevant it'll be injected anyway.
 
 """
 from bazbot.vectors import Vectinator
@@ -52,7 +54,8 @@ class BazBrain:
         print('prompt:', fullprompt)
         try:
             response = await self._gpt_request(fullprompt)
-            return response
+            processed_response = self.attitude.process_response(response)
+            return processed_response
         except Exception as e:
             print(e)
             return None
